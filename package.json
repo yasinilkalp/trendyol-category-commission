@@ -1,0 +1,24 @@
+{
+  "name": "trendyol-category-commission",
+  "version": "1.0.0",
+  "description": "Trendyol Kategori Komisyonlarını kaydeden uygulama",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "trendyol",
+    "category",
+    "commission"
+  ],
+  "author": "Yasin İlkalp Arabacı",
+  "license": "ISC",
+  "devDependencies": {
+    "playwright": "^1.31.1"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.31.1",
+    "dotenv": "^16.0.3",
+    "ioredis": "^5.3.1"
+  }
+}
