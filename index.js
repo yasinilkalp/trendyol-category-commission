@@ -9,10 +9,10 @@ const Redis = require("ioredis");
     const page = await browser.newPage();
 
     let redisConfig = {
-        uName: process.env.REDIS_USERNAME,
-        pwd: process.env.REDIS_PASSWORD,
-        host: process.env.REDIS_HOST,
-        port: process.env.REDIS_PORT
+        uName: process.env.UPSTASH_REDIS_USERNAME,
+        pwd: process.env.UPSTASH_REDIS_PASSWORD,
+        host: process.env.UPSTASH_REDIS_HOST,
+        port: process.env.UPSTASH_REDIS_PORT
     }
     let client = new Redis(`rediss://${redisConfig.uName}:${redisConfig.pwd}@${redisConfig.host}:${redisConfig.port}/0`);
 
