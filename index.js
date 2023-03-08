@@ -128,9 +128,23 @@ const nextPage = async (page) => {
 
 app.get("/", async (req, res, next) => {
   let client = connectRedis();
-  let data = await client.get("categories");
-  res.json(JSON.parse(data));
+  let categories = await client.get("categories");
+  let data = JSON.parse(categories);
+  let grouped = groupBy(data, "mainCategory");
+
+  res.json(grouped);
 });
+
+function groupBy(objectArray, property) {
+  return objectArray.reduce((acc, obj) => {
+    const key = obj[property];
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(obj);
+    return acc;
+  }, {});
+}
 
 app.get("/run", async (req, res, next) => {
   run();
