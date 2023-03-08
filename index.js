@@ -141,7 +141,7 @@ function groupBy(objectArray, property) {
     if (!acc[key]) {
       acc[key] = [];
     }
-    acc[key].push(obj);
+    // acc[key].push(obj);
     return acc;
   }, {});
 }
