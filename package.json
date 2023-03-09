@@ -4,7 +4,8 @@
   "description": "Trendyol Kategori Komisyonlarını kaydeden uygulama",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "ready": "npm install && npx playwright install --with-deps"
   },
   "keywords": [
     "trendyol",
