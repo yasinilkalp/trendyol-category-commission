@@ -101,7 +101,7 @@ const readTable = async (page, tableData, pageCount) => {
       subCategory: await td.nth(1).innerText(),
       commission: await (await td.nth(2).innerText()).replace("% ", ""),
     });
-    console.log(`------------ ${pageCount}.sayfadan ${((pageCount - 1) * 50) + (i + 1)}.Sayfadan Verileri getirdik.`);
+    console.log(`------------ ${pageCount}.sayfadan ${((pageCount - 1) * 50) + (i + 1)}. veriyi kaydettik.`);
   }
 };
 
