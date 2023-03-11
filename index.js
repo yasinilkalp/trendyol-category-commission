@@ -1,11 +1,6 @@
 require("dotenv").config();
 const playwright = require("playwright");
 const Redis = require("ioredis");
-const express = require("express");
-var cors = require("cors");
-
-const app = express();
-app.use(cors());
 
 const connectRedis = () => {
   let redisConfig = {
@@ -20,7 +15,7 @@ const connectRedis = () => {
   return client;
 };
 
-const run = async () => {
+(async () => {
   const browser = await playwright.chromium.launch({
     headless: false,
   });
@@ -49,9 +44,11 @@ const run = async () => {
 
   var dataControl = true;
   var tableData = [];
+  var pageCount = 1;
   while (dataControl) {
-    await readTable(page, tableData);
+    await readTable(page, tableData, pageCount);
     dataControl = await nextPage(page);
+    pageCount++;
   }
 
   console.log("------------ Verileri aldık. Redise kaydediyoruz.");
@@ -59,10 +56,12 @@ const run = async () => {
   let client = connectRedis();
   client.del("categories");
   client.set("categories", JSON.stringify(tableData));
+  console.log("------------ Redise kaydettik.");
+
 
   await page.close();
   await browser.close();
-};
+})();
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -86,7 +85,7 @@ const onLogin = async (page) => {
   await delay(5000);
 };
 
-const readTable = async (page, tableData) => {
+const readTable = async (page, tableData, pageCount) => {
   let rowCount = await page
     .locator("div.g-table table tbody")
     .locator("tr")
@@ -102,7 +101,7 @@ const readTable = async (page, tableData) => {
       subCategory: await td.nth(1).innerText(),
       commission: await (await td.nth(2).innerText()).replace("% ", ""),
     });
-    console.log(`------------ ${i + 1}.Sayfadan Verileri getirdik.`);
+    console.log(`------------ ${pageCount}.sayfadan ${((pageCount - 1) * 50) + (i + 1)}.Sayfadan Verileri getirdik.`);
   }
 };
 
@@ -125,34 +124,3 @@ const nextPage = async (page) => {
     return false;
   }
 };
-
-app.get("/", async (req, res, next) => {
-  let client = connectRedis();
-  let categories = await client.get("categories");
-  let data = JSON.parse(categories);
-  let grouped = groupBy(data, "mainCategory");
-
-  res.json(grouped);
-});
-
-function groupBy(objectArray, property) {
-  return objectArray.reduce((acc, obj) => {
-    const key = obj[property];
-    if (!acc[key]) {
-      acc[key] = [];
-    }
-    // acc[key].push(obj);
-    return acc;
-  }, {});
-}
-
-app.get("/run", async (req, res, next) => {
-  run();
-  res.json("başladı");
-});
-
-const port = process.env.PORT || 3000;
-
-app.listen(port, () =>
-  console.log(`Server running on ${port}, http://localhost:${port}`)
-);
